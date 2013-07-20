@@ -10,8 +10,8 @@ object UrlShortener {
 
   val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
   val mongoClient = MongoClient("localhost", 27017)
-  //val db = mongoClient("hootsuite")
-  val co = mongoClient("hootsuite")("hootsuite")
+  val db = mongoClient("hootsuite")
+  val co = db("hootsuite")
 
   def urltoShort(s: String): String = {
     val md5 = MessageDigest.getInstance("MD5")
@@ -30,20 +30,18 @@ object UrlShortener {
 
   def urlStastic(s: String): String = {
 
-/*
-    //val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s), MongoDBObject("_id" -> 0) )
-    val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s) )
-    if( rc.isEmpty ) 
+    val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s), MongoDBObject("_id" -> 0) )
+
+    if( rc.isEmpty )  {
       //Json.toJson("{result:error, hash:"+s+"}")
       "{result:error, hash:"+s+"}"
+    }
     else {
       //for( x <- rc ) yield {
       //  x.getAs[String]("longUrl").get.toStrig
       //}.mkString
       //Json.toJson(rc)
-      //rc.mkString
-*/
-      "Hello World"
+      rc.mkString
     }
   }
 
