@@ -14,7 +14,8 @@ object UrlShortener {
   val mongoClient = MongoClient("localhost", 27017)
   //val db = mongoClient("hootsuite")
   //val co = db("hootsuite")
-  val co = mongoClient("heroku_app17027224")("heroku_app17027224")
+  //val co = mongoClient("heroku_app17027224")("heroku_app17027224")
+  val co = mongoClient("hootsuite")("hootsuite")
 
   def urltoShort(s: String): String = {
     val md5 = MessageDigest.getInstance("MD5")
@@ -24,7 +25,7 @@ object UrlShortener {
       val m = ((x.toList.head & 0x3F) :: x.toList.tail).map("%02x".format(_)).mkString
       val n = Integer.parseInt(m, 16)
       val ss = (0 to 5).map { i => dict((n >> i*5) & 0x3d) }.mkString
-co.save( MongoDBObject("shortUrl" -> ss, "longUrl" -> s ) )
+co.save( MongoDBObject("shortUrl" -> ss, "longUrl" -> s, "count" -> 1) )
     }.mkString("******")
   }
 
