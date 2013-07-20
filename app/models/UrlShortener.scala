@@ -20,7 +20,8 @@ object UrlShortener {
     md5.digest().sliding(4,4).map { x =>
       val m = ((x.toList.head & 0x3F) :: x.toList.tail).map("%02x".format(_)).mkString
       val n = Integer.parseInt(m, 16)
-      (0 to 5).map { i => dict((n >> i*5) & 0x3d) }.mkString
+      val ss = (0 to 5).map { i => dict((n >> i*5) & 0x3d) }.mkString
+co.save( MongoDBObject("shortUrl" -> ss, "longUrl" -> s ) )
     }.mkString("******")
   }
 
