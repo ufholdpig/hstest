@@ -1,12 +1,19 @@
 package models
 
 import java.security.MessageDigest
+import com.mongodb.casbah.Imports._
+import play.api.libs.json._
+
+case class RECORD(longUrl: String, shortUrl: String, count: Long)
 
 object UrlShortener {
 
   val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
+  val mongoClient = MongoClient("localhost", 27017)
+  //val db = mongoClient("hootsuite")
+  val co = mongoClient("hootsuite")("hootsuite")
 
-  def urlShort(s: String): String = {
+  def urltoShort(s: String): String = {
     val md5 = MessageDigest.getInstance("MD5")
     md5.reset()
     md5.update(s.getBytes)
@@ -17,7 +24,25 @@ object UrlShortener {
     }.mkString("--")
   }
 
-  def urlLong(s: String): String = {
+  def urltoLong(s: String): String = {
     "http://www.wenxuecity.com"
   }
+
+  def urlStastic(s: String): String = {
+
+    //val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s), MongoDBObject("_id" -> 0) )
+    val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s) )
+    if( rc.isEmpty ) 
+      //Json.toJson("{result:error, hash:"+s+"}")
+      "{result:error, hash:"+s+"}"
+    else {
+      //for( x <- rc ) yield {
+      //  x.getAs[String]("longUrl").get.toStrig
+      //}.mkString
+      //Json.toJson(rc)
+      //rc.mkString
+      "Hello World"
+    }
+  }
+
 }

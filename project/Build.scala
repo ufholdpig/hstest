@@ -9,8 +9,12 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     // Add your project dependencies here,
-    jdbc,
-    anorm
+      "org.webjars" % "webjars-play" % "2.1.0",
+      "org.webjars" % "jquery" % "1.9.1",
+      "org.mongodb" %% "casbah" % "2.6.2"
+      //"net.vz.mongodb.jackson" %% "play-mongo-jackson-mapper" % "1.1.0",
+    //jdbc,
+    //anorm
   )
 
 

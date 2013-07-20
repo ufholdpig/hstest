@@ -10,14 +10,14 @@ object UrlController extends Controller {
   def index=TODO
 
   def fromShortUrl(url: String) = Action {
-    Redirect(UrlShortener.urlLong(url))
+    Redirect(UrlShortener.urltoLong(url))
   }
   
   def fromLongUrl(url: String) = Action {
-    Ok(UrlShortener.urlShort(url))
+    Ok(UrlShortener.urltoShort(url))
   }
 
   def urlStat(hash: String) = Action{
-    Ok("{result:simply,hash:"+hash+"}")
+    Ok(UrlShortener.urlStastic(hash))
   }
 }
