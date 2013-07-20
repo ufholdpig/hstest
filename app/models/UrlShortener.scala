@@ -11,7 +11,8 @@ object UrlShortener {
   val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
 
 
-  val mongoClient = MongoClient("localhost", 27017)
+  val mongoClient = MongoClient()
+  //val mongoClient = MongoClient("localhost", 27017)
   //val db = mongoClient("hootsuite")
   //val co = db("hootsuite")
   //val co = mongoClient("heroku_app17027224")("heroku_app17027224")
