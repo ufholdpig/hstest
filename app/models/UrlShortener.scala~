@@ -30,6 +30,7 @@ object UrlShortener {
 
   def urlStastic(s: String): String = {
 
+/*
     //val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s), MongoDBObject("_id" -> 0) )
     val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s) )
     if( rc.isEmpty ) 
@@ -40,7 +41,9 @@ object UrlShortener {
       //  x.getAs[String]("longUrl").get.toStrig
       //}.mkString
       //Json.toJson(rc)
-      rc.mkString
+      //rc.mkString
+*/
+      "Hello World"
     }
   }
 
