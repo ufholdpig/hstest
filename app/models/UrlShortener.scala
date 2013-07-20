@@ -9,9 +9,12 @@ case class RECORD(longUrl: String, shortUrl: String, count: Long)
 object UrlShortener {
 
   val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
+
+
   val mongoClient = MongoClient("localhost", 27017)
-  val db = mongoClient("hootsuite")
-  val co = db("hootsuite")
+  //val db = mongoClient("hootsuite")
+  //val co = db("hootsuite")
+  val co = mongoClient("heroku_app17027224")("heroku_app17027224")
 
   def urltoShort(s: String): String = {
     val md5 = MessageDigest.getInstance("MD5")
