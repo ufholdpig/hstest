@@ -1,0 +1,22 @@
+import java.security.MessageDigest
+
+object UrlShortener {
+
+  def unpack(s: String, a: String) = {
+    val md5 = MessageDigest.getInstance(a)
+    //md5.reset()
+    md5.update(s.getBytes)
+    //md5.digest().map("%02x".format(_)).sliding(4,4)
+    md5.digest().sliding(4,4)
+  }
+
+  def main(args: Array[String]) {
+    println("Hello World")
+
+    val rc1 = unpack("Hello", "MD5")
+    rc1 foreach { x => 
+      val m = x.map("%02x".format(_)).mkString & 0x3FFFFFFF
+      println("%02x".format(m))
+    }
+  }
+}
