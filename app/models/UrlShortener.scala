@@ -10,13 +10,17 @@ object UrlShortener {
 
   val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
 
+//mongodb://<user>:<password>@dharma.mongohq.com:10043/app17027224
+//ds035428.mongolab.com:35428/hootsuite
 
-  val mongoClient = MongoClient()
+  val mongoClient = MongoClient("ds035428.mongolab.com",35428)
+
   //val mongoClient = MongoClient("localhost", 27017)
   //val db = mongoClient("hootsuite")
   //val co = db("hootsuite")
+
   //val co = mongoClient("heroku_app17027224")("heroku_app17027224")
-  val co = mongoClient("app17027224")("hootsuite")
+  val co = mongoClient("hootsuite")("hootsuite")
 
   def urltoShort(s: String): String = {
     val md5 = MessageDigest.getInstance("MD5")
