@@ -46,6 +46,7 @@ object UrlShortener {
       rc.mkString + "hello world"
     }
 */
+    val rc = co.find()
       "hello world " + s 
   }
 
