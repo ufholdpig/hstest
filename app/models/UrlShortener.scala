@@ -46,7 +46,7 @@ object UrlShortener {
       rc.mkString + "hello world"
     }
 */
-      rc.mkString + "hello world"
+      "hello world " + s 
   }
 
 }
