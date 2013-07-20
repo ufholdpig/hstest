@@ -16,7 +16,7 @@ object UrlShortener {
   //val db = mongoClient("hootsuite")
   //val co = db("hootsuite")
   //val co = mongoClient("heroku_app17027224")("heroku_app17027224")
-  val co = mongoClient("hootsuite")("hootsuite")
+  val co = mongoClient("app17027224")("hootsuite")
 
   def urltoShort(s: String): String = {
     val md5 = MessageDigest.getInstance("MD5")
