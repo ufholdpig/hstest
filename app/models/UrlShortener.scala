@@ -65,11 +65,17 @@ object UrlShortener {
     val rc = checkUrl(SURL(s))
     rc match {
       case None => None
-      case _    => val n = rc.get.getAs[Long]("count").get + 1
-                   co.update( MongoDBObject("shortUrl" -> s), 
-                              MongoDBObject("$set" -> MongoDBObject("count" -> n))
-                            )
-      			   rc.get.getAs[String]("longUrl")
+      case _    => //val n = rc.get.getAs[Long]("count").get + 1
+                   //co.update( MongoDBObject("shortUrl" -> s), 
+                   //           MongoDBObject("$set" -> MongoDBObject("count" -> n))
+                   //         )
+                   //------------------------------------------------------------------
+        		   // Use findAndModify to increase count field to avoid parallel issue
+                   //------------------------------------------------------------------
+                   co.findAndModify(query =  MongoDBObject("shortUrl" -> s),
+                                    update = $inc("count" -> 1)
+                                   )
+                   rc.get.getAs[String]("longUrl")
     }
   }
 
