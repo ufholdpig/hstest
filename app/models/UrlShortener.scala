@@ -84,10 +84,10 @@ object UrlShortener {
       else { 
         val query = if(s.length == 6) MongoDBObject("shortUrl" -> s)
                     else MongoDBObject("longUrl" -> s)
-        co.findOne(query) 
+        co.find(query) 
       }
     }
-    result.toString
+    result.map(_.tail.toMap).mkString    //Json.toJson(x.toString)
   }
 
 }
