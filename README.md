@@ -42,28 +42,36 @@ Developed Environment:
 
 Achievement:
 
-  /**
+   *
    * Method  toShortUrl(s: String): String
    * Input:  Long URL
    * Output: Shortened RUL
-   */
+   *
 
-  /**
+   *
    * Method  toLongUrl(s: String): Option[String]
    * Input:  Short URL
    * Output: Option[String] for long RUL
-   */
+   *
 
-  /**
+   *
    * Method  checkStatus(s: String): String
    * Input:  Short URL | Long URL | ALL
    * Output: Detail information about mapping of long and short URL, include count
-   */
+   *
+
   Need more work on handling Json format query string and get enrichment result.
   
   Due to the test purpose, this program has not done for user input/output interface, rather than
   showing up system framework, developing language, builder, database and deploy mechanisms.
-  
+
+
+  //---------------------------Updated--------------------------------
+  //
+  // Use findAndModify to increase count field to avoid parallel issue
+  //------------------------------------------------------------------
+
+
 Index:
 
 Url shortener (Test version)
@@ -80,4 +88,3 @@ http://hs-test.herokuapp.com/stat/[LONG URL]
 http://hs-test.herokuapp.com/stat/[SHORT URL]
 
 http://hs-test.herokuapp.com/stat/ALL
-  
