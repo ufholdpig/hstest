@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET		/					controllers.UrlController.index
+GET		/					controllers.Assets.at(path="/public", file="index.html")
 
 # Url shortening related functions
 GET		/url/*url			controllers.UrlController.getShortUrl(url: String)

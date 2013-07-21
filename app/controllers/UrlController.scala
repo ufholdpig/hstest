@@ -7,8 +7,6 @@ import models.UrlShortener
 
 object UrlController extends Controller {
 
-  def index = TODO
-
   def getLongUrl(url: String) = Action {
     
     UrlShortener.toLongUrl(url) match {
