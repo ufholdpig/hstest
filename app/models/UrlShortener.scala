@@ -3,25 +3,43 @@ package models
 import java.security.MessageDigest
 import com.mongodb.casbah.Imports._
 import play.api.libs.json._
-//import scala.math.BigInt
+//import scala.math.BigInt				// Improvement for LONG number within MongoDB
 
 abstract class URLSTR(url: String)
 case class LURL(url: String) extends URLSTR(url)
 case class SURL(url: String) extends URLSTR(url)
 
+/**
+ * Main Object which supplied long and short URL converting
+ */
 object UrlShortener {
 
-  val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
-
+  /*
+   * MongoDB database access address.
+   * MongoHQ and MongoLab
+   */
   //dharma.mongohq.com:10043/app17027224
   //ds035428.mongolab.com:35428/hootsuite
 
   val uri = MongoClientURI("mongodb://allen:allen88@ds035428.mongolab.com:35428/hootsuite")
   val co  = MongoClient(uri)("hootsuite")("hootsuite")
 
+  /*
+   * Local database for simple access
+   */
   //val mongoClient = MongoClient("localhost", 27017)
   //val co = mongoClient("hootsuite")("hootsuite")
 
+  /**
+   * Method  toShortUrl(s: String): String
+   * Input:  Long URL
+   * Output: Shortened RUL
+   * 
+   * Description:
+   *         Convert to short URL by giving long URL. Check from database if:
+   *         1: Exist, get the corresponding short URL
+   *         2: Non-Exist: convert to short one and append to database
+   */
   def toShortUrl(s: String): String = {
     
     val rc = checkUrl(LURL(s))
@@ -31,6 +49,17 @@ object UrlShortener {
     }
   }
   
+  /**
+   * Method  toLongUrl(s: String): Option[String]
+   * Input:  Short URL
+   * Output: Option[String] for long RUL
+   * 
+   * Description:
+   *         Check from database if:
+   *         1: Exist, get the corresponding long URL
+   *         2: Non-Exist: return None
+   *         3: return Options to caller for re-directing to new page
+   */
   def toLongUrl(s: String): Option[String] = {
     
     val rc = checkUrl(SURL(s))
@@ -44,6 +73,32 @@ object UrlShortener {
     }
   }
 
+  /**
+   * Method  checkStatus(s: String): String
+   * Input:  Short URL | Long URL | ALL
+   * Output: Detail information about mapping of long and short URL, include count
+   * 
+   * Description:
+   *         Check from database if:
+   *         1: Exist, get the informations for reporting
+   *         2: Non-Exist: return None
+   */
+  def checkStatus(s: String): String = {
+
+    val result = {
+      if( s == "ALL" ) co.find()
+      else { 
+        val query = if(s.length == 6) MongoDBObject("shortUrl" -> s)
+                    else MongoDBObject("longUrl" -> s)
+        co.find(query) 
+      }
+    }
+    result.map(_.tail.toMap).mkString    //Json.toJson(x.toString)
+  }
+
+  /*
+   * Assistant method to check URL from database
+   */
   def checkUrl(u: URLSTR): Option[models.UrlShortener.co.T] = { 
     val query = u match {
       case LURL(s) => MongoDBObject("longUrl" -> s) 
@@ -52,6 +107,20 @@ object UrlShortener {
     }
     co.findOne(query)
   }
+
+  /*
+   * Long URL shortener.
+   * 
+   * Method  calShortUrl(s: String): String
+   * Input:  Long URL
+   * Output: short URL
+   * 
+   * Description:
+   *         Calculate URL string to generate hash code. Reform to a unique short code.
+   *         Depends on MD5 hash code, get 4 6-characters code as short URL
+   *         Need improve algorithm to ensure short code collisions. 
+   */
+  val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
 
   def calShortUrl(s: String): String = {
     
@@ -75,19 +144,6 @@ object UrlShortener {
      */
     co.save( MongoDBObject("shortUrl" -> urlList.head, "longUrl" -> s, "count" -> 1.toLong) )
     urlList.head
-  }
-
-  def checkStatus(s: String): String = {
-
-    val result = {
-      if( s == "ALL" ) co.find()
-      else { 
-        val query = if(s.length == 6) MongoDBObject("shortUrl" -> s)
-                    else MongoDBObject("longUrl" -> s)
-        co.find(query) 
-      }
-    }
-    result.map(_.tail.toMap).mkString    //Json.toJson(x.toString)
   }
 
 }
