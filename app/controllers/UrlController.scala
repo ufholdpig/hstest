@@ -7,17 +7,21 @@ import models.UrlShortener
 
 object UrlController extends Controller {
 
-  def index=TODO
+  def index = TODO
 
-  def fromShortUrl(url: String) = Action {
-    Redirect(UrlShortener.urltoLong(url))
+  def getLongUrl(url: String) = Action {
+    
+    UrlShortener.toLongUrl(url) match {
+      case Some(str) => Redirect(str)		// Redirect to original page
+      case _         => Redirect("")		// Redirect to short url generator page
+    }
   }
   
-  def fromLongUrl(url: String) = Action {
-    Ok(UrlShortener.urltoShort(url))
+  def getShortUrl(url: String) = Action {
+    Ok(UrlShortener.toShortUrl(url))
   }
 
-  def urlStat(hash: String) = Action{
-    Ok(UrlShortener.urlStastic(hash))
+  def getStat(url: String) = Action{
+    Ok(UrlShortener.checkStatus(url))
   }
 }

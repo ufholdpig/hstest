@@ -3,61 +3,91 @@ package models
 import java.security.MessageDigest
 import com.mongodb.casbah.Imports._
 import play.api.libs.json._
+//import scala.math.BigInt
 
-case class RECORD(longUrl: String, shortUrl: String, count: Long)
+abstract class URLSTR(url: String)
+case class LURL(url: String) extends URLSTR(url)
+case class SURL(url: String) extends URLSTR(url)
 
 object UrlShortener {
 
   val dict = ('a' to 'z') ++ ('0' to '9') ++ ('A' to 'Z')
 
-//mongodb://<user>:<password>@dharma.mongohq.com:10043/app17027224
-//mongodb://<user>:<password>@ds035428.mongolab.com:35428/hootsuite
+  //dharma.mongohq.com:10043/app17027224
+  //ds035428.mongolab.com:35428/hootsuite
 
   val uri = MongoClientURI("mongodb://allen:allen88@ds035428.mongolab.com:35428/hootsuite")
   val co  = MongoClient(uri)("hootsuite")("hootsuite")
 
   //val mongoClient = MongoClient("localhost", 27017)
-  //val db = mongoClient("hootsuite")
-  //val co = db("hootsuite")
+  //val co = mongoClient("hootsuite")("hootsuite")
 
+  def toShortUrl(s: String): String = {
+    
+    val rc = checkUrl(LURL(s))
+    rc match {
+      case None => calShortUrl(s)
+      case _    => rc.get.getAs[String]("shortUrl").get
+    }
+  }
+  
+  def toLongUrl(s: String): Option[String] = {
+    
+    val rc = checkUrl(SURL(s))
+    rc match {
+      case None => None
+      case _    => val n = rc.get.getAs[Long]("count").get + 1
+                   co.update( MongoDBObject("shortUrl" -> s), 
+                              MongoDBObject("$set" -> MongoDBObject("count" -> n))
+                            )
+      			   rc.get.getAs[String]("longUrl")
+    }
+  }
 
-  def urltoShort(s: String): String = {
-    val md5 = MessageDigest.getInstance("MD5")
-    md5.reset()
-    md5.update(s.getBytes)
-    md5.digest().sliding(4,4).map { x =>
+  def checkUrl(u: URLSTR): Option[models.UrlShortener.co.T] = { 
+    val query = u match {
+      case LURL(s) => MongoDBObject("longUrl" -> s) 
+      case SURL(s) => MongoDBObject("shortUrl" -> s)
+      //case _       => null
+    }
+    co.findOne(query)
+  }
+
+  def calShortUrl(s: String): String = {
+    
+    /*
+     * Will consider SHA1 (20 bytes), SHA256 or SHA512, up to 40 bytes hash code,
+     * MD5 has 16 bytes
+     */
+    val keyStr = MessageDigest.getInstance("MD5")
+    keyStr.reset()
+    keyStr.update(s.getBytes)
+    
+    val urlList = keyStr.digest().sliding(4,4).map { x =>
       val m = ((x.toList.head & 0x3F) :: x.toList.tail).map("%02x".format(_)).mkString
       val n = Integer.parseInt(m, 16)
-      val ss = (0 to 5).map { i => dict((n >> i*5) & 0x3d) }.mkString
-co.save( MongoDBObject("shortUrl" -> ss, "longUrl" -> s, "count" -> 88) )
-    }.mkString("******")
+      (0 to 5).map { i => dict((n >> i*5) & 0x3d) }.mkString
+    }.toList
+    
+    /*
+     * Will consider the short url collision, and pick another one
+     * but Base62(a-zA-Z0-9) for 6 characters giving us 62 ^ 6 short urls 
+     */
+    co.save( MongoDBObject("shortUrl" -> urlList.head, "longUrl" -> s, "count" -> 1.toLong) )
+    urlList.head
   }
 
-  def urltoLong(s: String): String = {
-    "http://www.google.com"
-  }
+  def checkStatus(s: String): String = {
 
-  def urlStastic(s: String): String = {
-
-    //val rc = if( s == "ALL" ) co.find() else co.find( MongoDBObject("shortUrl" -> s), MongoDBObject("_id" -> 0) )
-/*
-    val rc = co.find()
-
-    if( rc.isEmpty )  {
-      //Json.toJson("{result:error, hash:"+s+"}")
-      "{result:error, hash:"+s+"}"
+    val result = {
+      if( s == "ALL" ) co.find()
+      else { 
+        val query = if(s.length == 6) MongoDBObject("shortUrl" -> s)
+                    else MongoDBObject("longUrl" -> s)
+        co.findOne(query) 
+      }
     }
-    else {
-      //for( x <- rc ) yield {
-      //  x.getAs[String]("longUrl").get.toStrig
-      //}.mkString
-      //Json.toJson(rc)
-      rc.mkString + "hello world"
-    }
-*/
-    val rc = co.find().toList
-
-      "hello world " +rc.mkString + s 
+    result.toString
   }
 
 }
