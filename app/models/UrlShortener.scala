@@ -96,7 +96,8 @@ object UrlShortener {
       case x if(x.length == 6) => MongoDBObject("shortUrl" -> s)
       case _                   => MongoDBObject("longUrl" -> s)
     }
-    "[%s]".format(co.find(query,MongoDBObject("_id" -> 0)).toList.mkString(","))
+    //"[%s]".format(co.find(query,MongoDBObject("_id" -> 0)).toList.mkString(","))
+    co.find(query,MongoDBObject("_id" -> 0)).toList.mkString(",")
   }
 
   /*
