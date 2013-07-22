@@ -91,15 +91,12 @@ object UrlShortener {
    */
   def checkStatus(s: String): String = {
 
-    val result = {
-      if( s == "ALL" ) co.find()
-      else { 
-        val query = if(s.length == 6) MongoDBObject("shortUrl" -> s)
-                    else MongoDBObject("longUrl" -> s)
-        co.find(query) 
-      }
+    val query = s match {
+      case "ALL"               => null
+      case x if(x.length == 6) => MongoDBObject("shortUrl" -> s)
+      case _                   => MongoDBObject("longUrl" -> s)
     }
-    result.map(_.tail.toMap).mkString    //Json.toJson(x.toString)
+    "[%s]".format(co.find(query,MongoDBObject("_id" -> 0)).toList.mkString(","))
   }
 
   /*

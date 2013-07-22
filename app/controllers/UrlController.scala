@@ -20,6 +20,6 @@ object UrlController extends Controller {
   }
 
   def getStat(url: String) = Action{
-    Ok(UrlShortener.checkStatus(url))
+    Ok(UrlShortener.checkStatus(url)).as("application/json")
   }
 }

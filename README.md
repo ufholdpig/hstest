@@ -66,10 +66,13 @@ Achievement:
   showing up system framework, developing language, builder, database and deploy mechanisms.
 
 
-  //---------------------------Updated--------------------------------
-  //
-  // Use findAndModify to increase count field to avoid parallel issue
-  //------------------------------------------------------------------
+  ---------------------------Updated--------------------------------
+   Use findAndModify to increase count field to avoid parallel issue
+  ------------------------------------------------------------------
+
+  ---------------------------Updated--------------------------------
+   drop "_id" for all records when output to Json
+  ------------------------------------------------------------------
 
 
 Index:
