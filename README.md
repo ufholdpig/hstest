@@ -74,20 +74,18 @@ Achievement:
    drop "_id" for all records when output to Json
   ------------------------------------------------------------------
 
-
-Index:
-
 Url shortener (Test version)
+
 
 
 1. Convert long Url to 6-characters short tag. Usage: http://hs-test.herokuapp.com/url/http://www.xxx.com/yyyy
 
-2. Test short Url and re-direct to the original page. Usage: http://hs-test.herokuapp.com/abcdef
+2. Test short Url and re-direct to the original page. Usage: http://hs-test.herokuapp.com/ueu6Ff
 
 3. Check statics of an address. Usage:
 
-http://hs-test.herokuapp.com/stat/[LONG URL]
+	http://hs-test.herokuapp.com/stat/www.amazon.cn
 
-http://hs-test.herokuapp.com/stat/[SHORT URL]
+	http://hs-test.herokuapp.com/stat/AnEfIz
 
-http://hs-test.herokuapp.com/stat/ALL
+	http://hs-test.herokuapp.com/stat/ALL
